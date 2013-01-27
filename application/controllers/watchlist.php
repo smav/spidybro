@@ -1,13 +1,33 @@
 <?php
 
-class Item_Controller extends Base_Controller {
+class Watchlist_Controller extends Base_Controller {
 
 	public $restful = true;
 
-	//public function get_index()
-	//{
-		//$this->layout->nest('content', 'item.index');
-	//}
+	public function get_index()
+	{
+		if (Auth::check())
+		{
+			$lists = DB::table('watchlists')
+				->where('user_id', '=', Auth::user()->id);
+			$templates = array(
+				'none' => 'No Template',
+				'tier1' => 'Tier 1 Mats',
+				'tier2' => 'Tier 2 Mats',
+				'etc'   => 'etc',
+			);
+
+			$this->layout->nest('content', 'watchlist.index', array(
+				'lists' => $lists,
+				'templates' => $templates,
+			));
+		}
+		else
+		{
+			return Redirect::to_action('user@login')
+				->with('info', 'Please log in to use the watchlist feature.');
+		}
+	}
 
 	public function post_search()
 	{

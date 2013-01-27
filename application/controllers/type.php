@@ -29,8 +29,6 @@ class Type_Controller extends Base_Controller {
 		$this->layout->nest('content', 'item.index', array(
 			'items' => $items
 		));
-		//die(var_dump($items));
 	}
 
 }
-

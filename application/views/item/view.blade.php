@@ -1,15 +1,7 @@
 @section('content')
 	@if (Session::has('error'))
-	<div class="pagination-centered">
 		{{ Alert::error(Session::get('error')) }}
-	</div>
 	@endif
-	@if (Session::has('success'))
-	<div class="pagination-centered">
-		{{ Alert::success(Session::get('success')) }}
-	</div>
-	@endif
-
 	<div class="hero-unit">
 		<table id="datatable" class="table table-bordered table-hover table-striped">
 			<thead>

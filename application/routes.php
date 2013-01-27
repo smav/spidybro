@@ -35,16 +35,8 @@
 /*
  * Auth Routes
  */
-// Present the user with login form
-Route::get('login', 'user@login');
-// Process login attempt
-Route::post('login', 'user@login');
-// Present the user with register form
-Route::get('register', 'user@register');
-// Process register attempt
-Route::post('register', 'user@register');
-
-// Log out user
+Route::any('login', 'user@login');
+Route::any('register', 'user@register');
 Route::get('logout', function() {
 	Auth::logout();
 	return Redirect::to('/');

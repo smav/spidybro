@@ -56,19 +56,17 @@ class User_Controller extends Base_Controller {
 		$user = new User($new_user);
 		$user->save();
 
-		//return Redirect::to_action('user@login')->with_input()
-			//->with('successmsg', 'User registered successfully');
-
 		// log the user in
-		unset($new_user['email']);
-		if ( Auth::attempt($new_user) )
+		if ( Auth::login($user->id) )
 		{
-			return Redirect::to('home');
+			return Redirect::to('home')
+				->with('success', 'Welcome to SpidyBro'.$user->name.'!');
 		}
 		else
 		{
-			return Redirect::to_action('user@login')->with_input()
-				->with('successmsg', 'User registered successfully');
+			return Redirect::to_action('user@login')
+				->with_input()
+				->with('success', 'User registered successfully');
 		}
 	}
 

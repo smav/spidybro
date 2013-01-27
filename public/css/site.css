@@ -1,3 +1,9 @@
 .row {
 	margin-left: 0;
 }
+p {
+	text-align: center;
+}
+.hero-unit {
+	font-size: 16px;
+}

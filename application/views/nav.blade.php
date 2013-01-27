@@ -12,7 +12,7 @@
 		 <div class="nav-collapse collapse">
 		 	<ul class="nav">
 			<li class="divider-vertical"></li>
-		 	<li><a href="{{ URL::base().'/watchlists' }}">Watchlists</a></li>
+		 	<li><a href="{{ URL::base().'/watchlist' }}">Watchlists</a></li>
 
 			<li class="divider-vertical"></li>
 		 	<li class="dropdown">
@@ -53,10 +53,18 @@
 					<a class="js-login" href="{{ URL::to('login')}}"> <i class="icon-user"></i> Login </a>
 				</li>
               @else
-				<li>
-					<a class="js-login" href="{{ URL::to('user/manage/'.Auth::user()->username) }}">User: {{ Auth::user()->username }}</a>
+				<li class="dropdown">
+					<a class="dropdown-toggle" data-toggle="dropdown" href="#"> <i class="icon-user"></i> {{ Auth::user()->username }} <b class="caret"></b></b></a>
+					<ul class="dropdown-menu">
+						<li>
+							<a tabindex="-1" href="/user/manage">Manage User</a>
+						</li>
+						<li class="divider"></li>
+						<li>
+							<a tabindex="-1" href="/logout">Log Out</a>
+						</li>
+					</ul>
 				</li>
-				<li> {{ HTML::link('logout', 'Logout') }} </li>
               @endif
             </ul>
 
