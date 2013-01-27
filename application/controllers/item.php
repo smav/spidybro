@@ -20,10 +20,7 @@ class Item_Controller extends Base_Controller {
 		//->paginate(10);
 
 		// make a gw2db link
-		foreach ($items as &$item)
-		{
-			$this->addLink($item);
-		}
+		$this->addInfo($items);
 
 		$this->layout->nest('content', 'item.index', array(
 			'items' => $items

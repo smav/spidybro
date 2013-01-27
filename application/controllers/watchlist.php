@@ -8,18 +8,22 @@ class Watchlist_Controller extends Base_Controller {
 	{
 		if (Auth::check())
 		{
-			$lists = DB::table('watchlists')
-				->where('user_id', '=', Auth::user()->id);
+			$watchlists = DB::table('watchlists')
+				->where('user_id', '=', Auth::user()->id)
+				->get();
+
 			$templates = array(
 				'none' => 'No Template',
-				'tier1' => 'Tier 1 Mats',
-				'tier2' => 'Tier 2 Mats',
-				'etc'   => 'etc',
 			);
 
+			$roTemplates = DB::table('watchlists')
+				->where('user_id', '=', 0)
+				->where('readonly', '=', true)
+				->get();
+
 			$this->layout->nest('content', 'watchlist.index', array(
-				'lists' => $lists,
-				'templates' => $templates,
+				'watchlists' => $watchlists,
+				'templates' => array_merge($templates, $roTemplates),
 			));
 		}
 		else
@@ -27,27 +31,6 @@ class Watchlist_Controller extends Base_Controller {
 			return Redirect::to_action('user@login')
 				->with('info', 'Please log in to use the watchlist feature.');
 		}
-	}
-
-	public function post_search()
-	{
-		// Get the items
-		$term = Input::get('term');
-		$term = '%'.$term.'%';
-		$items = DB::table('items')
-			->where('name', 'LIKE', $term)
-			->get();
-		//->paginate(10);
-
-		// make a gw2db link
-		foreach ($items as &$item)
-		{
-			$this->addLink($item);
-		}
-
-		$this->layout->nest('content', 'item.index', array(
-			'items' => $items
-		));
 	}
 
 	public function get_view($data_id)
@@ -72,4 +55,62 @@ class Watchlist_Controller extends Base_Controller {
 				->with('error', 'Invalid item id : '.$data_id);
 		}
 	}
+
+	public function post_search()
+	{
+		// Get the items
+		$term = Input::get('term');
+		$term = '%'.$term.'%';
+		$items = DB::table('items')
+			->where('name', 'LIKE', $term)
+			->get();
+		//->paginate(10);
+
+		// make a gw2db link
+		$this->addInfo($items);
+
+		$this->layout->nest('content', 'item.index', array(
+			'items' => $items
+		));
+	}
+
+	public function post_add()
+	{
+		$new_list           = new Watchlist();
+		$new_list->readonly = false;
+		$new_list->user_id  = Auth::user()->id;
+
+		$template           = Input::get('template');
+		$list               = array();
+		if ($template == 'none')
+		{
+			$new_list->name = Input::get('name');
+		}
+		else
+		{
+			//$list = DB::table('watchlists')
+			//	->where('id', '=', $template)
+			//	->get();
+			$list = Watchlist::find($template);
+			$new_list->name = $list->name;
+		}
+		if ($new_list->save())
+		{
+			if (!empty($list->items))
+			{
+				foreach ($list->items as $item)
+				{
+					$new_list->items()->attach($item['id']);
+				}
+			}
+			return Redirect::to_action('watchlist@index')
+				->with('success', 'Created new watchlist.');
+		}
+		else
+		{
+			return Redirect::to_action('watchlist@index')
+				->with('error', 'Failed to save new watchlist.');
+		}
+	}
+
 }

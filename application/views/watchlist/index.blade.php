@@ -17,12 +17,14 @@
 
 	<div class="hero-unit">
 		@if (! empty($watchlists) )
+		<ul>
 			@foreach ($watchlists as $watchlist)
+				<li> {{ $watchlist->name }} </li>
 			@endforeach
+		</ul>
 		@else
 			<p>Please create a new watchlist (either empty or from a template).</p>
 		@endif
-
 		<div class="pagination-centered">
 			{{ Form::open('/watchlist/add', 'POST', array('class' => 'form-inline')) }}
 			{{ Form::text('name', '', array('class' => 'input-small', 'placeholder' => 'name')) }}

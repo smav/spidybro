@@ -5,7 +5,7 @@ class Rarity extends Eloquent {
 
 	public function items()
 	{
-		return $this->has_many('Items');
+		return $this->has_many('Items','rarity');
 	}
 }
 

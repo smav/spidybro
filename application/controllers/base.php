@@ -7,9 +7,10 @@ class Base_Controller extends Controller {
 	/*
 	 *	API setup
 	 */
-	private $version = 'v0.9';
-	private $format  = 'json';
+	private $version  = 'v0.9';
+	private $format   = 'json';
 	protected $apiUrl = '';
+	public $rarities  = array();
 
 	public function __construct()
 	{
@@ -21,6 +22,12 @@ class Base_Controller extends Controller {
 						.'/';
 
 		$this->setupLayout();
+		$rarities = Rarity::all();
+		foreach ($rarities as $rarity)
+		{
+			$this->rarities[$rarity->id] = $rarity->name;
+		}
+		//die(var_dump($this->rarities));
 	}
 
 	protected function apiGet($apiRequest = '')
@@ -58,7 +65,17 @@ class Base_Controller extends Controller {
 		}
 	}
 
-	protected function addLink($item = null)
+	protected function addInfo($items = array())
+	{
+		$newitems  = array();
+		foreach ($items as &$item)
+		{
+			$item->gw2db_link = $this->getLink($item);
+			$item->rarityname = $this->getRarity($item);
+		}
+	}
+
+	protected function getLink($item = null)
 	{
 		// http://www.gw2db.com/items/71359-adelberns-royal-signet-ring
 		if (is_null($item))
@@ -79,7 +96,17 @@ class Base_Controller extends Controller {
 		$link .= $item->gw2db_external_id;
 		$link .= $fixed;
 
-		$item->gw2db_link = $link;
-		//return $item;
+		//$item->gw2db_link = $link;
+		return $link;
+	}
+
+	protected function getRarity($item = null)
+	{
+		if (is_null($item))
+		{
+			return null;
+		}
+		//$name = Rarity::find($item->rarity)->name;
+		return $this->rarities[$item->rarity];
 	}
 }

@@ -21,4 +21,9 @@ class Item extends Eloquent {
 		return $this->belongs_to('Discipline');
 	}*/
 
+	public function watchlists()
+	{
+		return $this->has_many_and_belongs_to('Watchlist');
+	}
+
 }

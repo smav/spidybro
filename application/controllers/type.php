@@ -20,10 +20,7 @@ class Type_Controller extends Base_Controller {
 		}
 
 		// make a gw2db link
-		foreach ($items as &$item)
-		{
-			$this->addLink($item);
-		}
+		$this->addInfo($items);
 
 		// Send data to the view
 		$this->layout->nest('content', 'item.index', array(
